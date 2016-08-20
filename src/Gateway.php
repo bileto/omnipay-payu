@@ -8,6 +8,7 @@ use Omnipay\PayU\Messages\AccessTokenRequest;
 use Omnipay\PayU\Messages\AccessTokenResponse;
 use Omnipay\PayU\Messages\CompletePurchaseRequest;
 use Omnipay\PayU\Messages\PurchaseRequest;
+use Omnipay\PayU\Messages\PurchaseResponse;
 
 class Gateway extends AbstractGateway
 {
@@ -41,7 +42,7 @@ class Gateway extends AbstractGateway
 
     /**
      * @param array $parameters
-     * @return ResponseInterface
+     * @return PurchaseResponse
      */
     public function purchase(array $parameters = array())
     {
