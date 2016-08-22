@@ -3,10 +3,10 @@
 namespace Omnipay\PayU;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\PayU\Messages\AccessTokenRequest;
 use Omnipay\PayU\Messages\AccessTokenResponse;
 use Omnipay\PayU\Messages\CompletePurchaseRequest;
+use Omnipay\PayU\Messages\CompletePurchaseResponse;
 use Omnipay\PayU\Messages\PurchaseRequest;
 use Omnipay\PayU\Messages\PurchaseResponse;
 
@@ -53,16 +53,24 @@ class Gateway extends AbstractGateway
             'apiUrl' => $this->getApiUrl()
         ]);
         $response = $request->send();
+
         return $response;
     }
 
     /**
      * @param array $parameters
-     * @return CompletePurchaseRequest
+     * @return CompletePurchaseResponse
      */
     public function completePurchase(array $parameters = array())
     {
-        return $this->createRequest(CompletePurchaseRequest::class, $parameters);
+        $accessTokenResponse = $this->getAccessToken();
+        $request = parent::createRequest(CompletePurchaseRequest::class, array_merge($parameters, [
+            'accessToken' => $accessTokenResponse->getAccessToken(),
+            'apiUrl'      => $this->getApiUrl()
+        ]));
+        $response = $request->send();
+
+        return $response;
     }
 
     /**

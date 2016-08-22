@@ -27,14 +27,13 @@ class PurchaseRequest extends AbstractRequest
     {
         $apiUrl = $this->apiUrl . '/api/v2_1/orders';
         $headers = [
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
+            'Accept'        => 'application/json',
+            'Content-Type'  => 'application/json',
             'Authorization' => $this->accessToken
         ];
         $httpResponse = $this->httpClient->post($apiUrl, $headers, json_encode($data))->send();
         $responseData = $httpResponse->json();
-        $response = new PaymentResponse($this, $responseData);
-        $response->setVerifier($this->getVerifier());
+        $response = new PurchaseResponse($this, $responseData);
 
         return $this->response = $response;
     }
@@ -56,6 +55,5 @@ class PurchaseRequest extends AbstractRequest
     {
         $this->accessToken = $accessToken;
     }
-
 
 }

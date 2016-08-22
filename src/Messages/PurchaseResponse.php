@@ -16,6 +16,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
             return false;
         }
         $redirectUrl = $this->getRedirectUrl();
+
         return is_string($redirectUrl);
     }
 
@@ -24,11 +25,12 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      */
     public function getRedirectUrl()
     {
-        $redirectUrl = $this->data['redirectUri'];
-        if (!is_array($this->data) || !isset($redirectUrl) || !is_string($redirectUrl)) {
+        if (isset($this->data['redirectUri']) && is_string($this->data['redirectUri'])) {
+            return $this->data['redirectUri'];
+        } else {
             return null;
         }
-        return $redirectUrl;
+
     }
 
     /**
@@ -55,12 +57,23 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
         return $this->data['status']['statusCode'];
     }
 
+    /**
+     * PayU orderId
+     * @return string
+     */
+    public function getTransactionId()
+    {
+        return (string)$this->data['orderId'];
+    }
+
+    /**
+     * PayU orderId
+     * @return string
+     * todo: use getTransactionId
+     */
     public function getTransactionReference()
     {
-        if (isset($this->data['orderId'])) {
-            return $this->data['orderId'];
-        }
-        return null;
+        return $this->getTransactionId();
     }
 
     public function isRedirect()

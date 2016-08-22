@@ -7,25 +7,50 @@ use Omnipay\Common\Message\ResponseInterface;
 class CompletePurchaseRequest extends AbstractRequest
 {
 
+    /** @var string */
+    private $apiUrl;
+    /** @var string */
+    private $accessToken;
+
     /**
-     * Get the raw data array for this message. The format of this varies from gateway to
-     * gateway, but will usually be either an associative array, or a SimpleXMLElement.
-     *
      * @return mixed
      */
     public function getData()
     {
-        return $this->getParameters();
+        return [];
     }
 
     /**
-     * Send the request with specified data
-     *
      * @param  mixed $data The data to send
      * @return ResponseInterface
      */
     public function sendData($data)
     {
-        throw new NotImplementedException();
+        $headers = [
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+            'Authorization' => $this->accessToken
+        ];
+        $httpRequest = $this->httpClient->get($this->apiUrl . '/api/v2_1/orders/' . urlencode($this->getTransactionId()), $headers);
+        $httpResponse = $httpRequest->send();
+
+        $response = new CompletePurchaseResponse($this, $httpResponse->json());
+        return $this->response = $response;
+    }
+
+    /**
+     * @param string $accessToken
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
+
+    /**
+     * @param string $apiUrl
+     */
+    public function setApiUrl($apiUrl)
+    {
+        $this->apiUrl = $apiUrl;
     }
 }
