@@ -4,15 +4,20 @@ require 'vendor/autoload.php';
 
 use Omnipay\PayU\GatewayFactory;
 
-// sandbox
-$posId = 300046;
-$secondKey = '0c017495773278c50c7b35434017b2ca';
-$oAuthClientSecret = 'c8d4b7ac61758704f38ed5564d8c0ae0';
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
+// default is official sandbox
+$posId = isset($_ENV['POS_ID']) ? $_ENV['POS_ID'] : '300046';
+$secondKey = isset($_ENV['SECOND_KEY']) ? $_ENV['SECOND_KEY'] : '0c017495773278c50c7b35434017b2ca';
+$oAuthClientSecret = isset($_ENV['OAUTH_CLIENT_SECRET']) ? $_ENV['OAUTH_CLIENT_SECRET'] : 'c8d4b7ac61758704f38ed5564d8c0ae0';
+
+dump($posId);
 
 $gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret, true);
 
 try {
-    $completeRequest = ['transactionId' => 'X7CBNL2NS4160822GUEST000P01'];
+    $completeRequest = ['transactionId' => 'GD8J8WF8Z2160822GUEST000P01'];
     $response = $gateway->completePurchase($completeRequest);
 
     echo "Is Successful: " . $response->isSuccessful() . PHP_EOL;
