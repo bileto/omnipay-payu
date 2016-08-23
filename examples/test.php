@@ -2,6 +2,7 @@
 
 require '../vendor/autoload.php';
 
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use Omnipay\PayU\GatewayFactory;
 
 $dotenv = new Dotenv\Dotenv(__DIR__ . '/..');
@@ -15,7 +16,7 @@ $oAuthClientSecret = isset($_ENV['OAUTH_CLIENT_SECRET']) ? $_ENV['OAUTH_CLIENT_S
 $gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret, true);
 
 try {
-    $orderNo = '12345677';
+    $orderNo = uniqid();
     $returnUrl = 'http://localhost:8000/gateway-return.php';
     $description = 'Shopping at myStore.com';
 
@@ -26,7 +27,7 @@ try {
         'description'   => $description,
         'currencyCode'  => 'PLN',
         'totalAmount'   => 15000,
-        'exOrderId'     => $orderNo,
+        'extOrderId'     => $orderNo,
         'buyer'         => (object)[
             'email'     => 'jan.machala+payu@bileto.com',
             'firstName' => 'Peter',
@@ -56,6 +57,7 @@ try {
 
     // Payment init OK, redirect to the payment gateway
     echo $response->getRedirectUrl() . PHP_EOL;
-} catch (\Exception $e) {
+} catch (ClientErrorResponseException $e) {
     dump((string)$e);
+    dump($e->getResponse()->getBody(true));
 }

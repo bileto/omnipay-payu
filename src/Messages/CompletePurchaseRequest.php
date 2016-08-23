@@ -27,11 +27,12 @@ class CompletePurchaseRequest extends AbstractRequest
     public function sendData($data)
     {
         $headers = [
-            'Accept' => 'application/json',
-            'Content-Type' => 'application/json',
+            'Accept'        => 'application/json',
+            'Content-Type'  => 'application/json',
             'Authorization' => $this->accessToken
         ];
-        $httpRequest = $this->httpClient->get($this->apiUrl . '/api/v2_1/orders/' . urlencode($this->getTransactionId()), $headers);
+        $url = $this->apiUrl . '/api/v2_1/orders/' . urlencode($this->getTransactionId());
+        $httpRequest = $this->httpClient->get($url, $headers);
         $httpResponse = $httpRequest->send();
 
         $response = new CompletePurchaseResponse($this, $httpResponse->json());

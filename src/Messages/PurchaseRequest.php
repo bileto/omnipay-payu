@@ -25,13 +25,15 @@ class PurchaseRequest extends AbstractRequest
      */
     public function sendData($data)
     {
-        $apiUrl = $this->apiUrl . '/api/v2_1/orders';
         $headers = [
             'Accept'        => 'application/json',
             'Content-Type'  => 'application/json',
             'Authorization' => $this->accessToken
         ];
-        $httpResponse = $this->httpClient->post($apiUrl, $headers, json_encode($data))->send();
+        $apiUrl = $this->apiUrl . '/api/v2_1/orders';
+        $httpRequest = $this->httpClient->post($apiUrl, $headers, json_encode($data));
+        $httpRequest->configureRedirects(true, 0);
+        $httpResponse = $httpRequest->send();
         $responseData = $httpResponse->json();
         $response = new PurchaseResponse($this, $responseData);
 
