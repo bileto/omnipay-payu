@@ -7,17 +7,22 @@ use Omnipay\Common\Message\ResponseInterface;
 class CompletePurchaseRequest extends AbstractRequest
 {
 
-    /** @var string */
-    private $apiUrl;
-    /** @var string */
-    private $accessToken;
+    public function setAccessToken($accessToken)
+    {
+        $this->setParameter('accessToken', $accessToken);
+    }
+
+    public function setApiUrl($apiUrl)
+    {
+        $this->setParameter('apiUrl', $apiUrl);
+    }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getData()
     {
-        return [];
+        return $this->getParameters();
     }
 
     /**
@@ -29,29 +34,14 @@ class CompletePurchaseRequest extends AbstractRequest
         $headers = [
             'Accept'        => 'application/json',
             'Content-Type'  => 'application/json',
-            'Authorization' => $this->accessToken
+            'Authorization' => $data['accessToken']
         ];
-        $url = $this->apiUrl . '/api/v2_1/orders/' . urlencode($this->getTransactionId());
+        $url = $data['apiUrl'] . '/api/v2_1/orders/' . urlencode($this->getTransactionId());
         $httpRequest = $this->httpClient->get($url, $headers);
         $httpResponse = $httpRequest->send();
 
         $response = new CompletePurchaseResponse($this, $httpResponse->json());
+
         return $this->response = $response;
-    }
-
-    /**
-     * @param string $accessToken
-     */
-    public function setAccessToken($accessToken)
-    {
-        $this->accessToken = $accessToken;
-    }
-
-    /**
-     * @param string $apiUrl
-     */
-    public function setApiUrl($apiUrl)
-    {
-        $this->apiUrl = $apiUrl;
     }
 }
