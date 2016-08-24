@@ -46,12 +46,8 @@ class Gateway extends AbstractGateway
      */
     public function purchase(array $parameters = array())
     {
-        $accessTokenResponse = $this->getAccessToken();
-        $request = parent::createRequest(PurchaseRequest::class, [
-            'accessToken' => $accessTokenResponse->getAccessToken(),
-            'purchaseData' => $parameters,
-            'apiUrl' => $this->getApiUrl()
-        ]);
+        $this->setAccessToken($this->getAccessToken()->getAccessToken());
+        $request = parent::createRequest(PurchaseRequest::class, $parameters);
         $response = $request->send();
 
         return $response;
