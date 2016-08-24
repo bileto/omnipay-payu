@@ -15,9 +15,6 @@ class Gateway extends AbstractGateway
     const URL_SANDBOX = 'https://secure.snd.payu.com';
     const URL_PRODUCTION = 'https://secure.payu.com';
 
-    /** @var bool */
-    private $isProductionMode;
-
     /**
      * Get gateway display name
      */
@@ -32,8 +29,8 @@ class Gateway extends AbstractGateway
     public function getAccessToken()
     {
         $request = parent::createRequest(AccessTokenRequest::class, [
-            'clientId' => $this->parameters->get('posId'),
-            'clientSecret' => $this->parameters->get('clientSecret'),
+            'clientId' => $this->getParameter('posId'),
+            'clientSecret' => $this->getParameter('clientSecret'),
             'apiUrl' => $this->getApiUrl()
         ]);
         $response = $request->send();
@@ -71,10 +68,10 @@ class Gateway extends AbstractGateway
      */
     private function getApiUrl()
     {
-        if ($this->isProductionMode) {
-            return self::URL_PRODUCTION;
-        } else {
+        if ($this->getTestMode()) {
             return self::URL_SANDBOX;
+        } else {
+            return self::URL_PRODUCTION;
         }
     }
 
@@ -84,7 +81,7 @@ class Gateway extends AbstractGateway
             'posId' => '',
             'secondKey' => '',
             'clientSecret' => '',
-            'isProductionMode' => false,
+            'testMode' => true,
         ];
     }
 
@@ -110,14 +107,6 @@ class Gateway extends AbstractGateway
     public function setClientSecret($clientSecret)
     {
         $this->setParameter('clientSecret', $clientSecret);
-    }
-
-    /**
-     * @param mixed $isProductionMode
-     */
-    public function setIsProductionMode($isProductionMode)
-    {
-        $this->isProductionMode = $isProductionMode;
     }
 
     private function setApiUrl($apiUrl)
