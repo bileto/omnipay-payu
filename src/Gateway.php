@@ -15,9 +15,6 @@ class Gateway extends AbstractGateway
     const URL_SANDBOX = 'https://secure.snd.payu.com';
     const URL_PRODUCTION = 'https://secure.payu.com';
 
-    /** @var bool */
-    private $isProductionMode;
-
     /**
      * Get gateway display name
      */
@@ -32,8 +29,8 @@ class Gateway extends AbstractGateway
     public function getAccessToken()
     {
         $request = parent::createRequest(AccessTokenRequest::class, [
-            'clientId' => $this->parameters->get('posId'),
-            'clientSecret' => $this->parameters->get('clientSecret'),
+            'clientId' => $this->getParameter('posId'),
+            'clientSecret' => $this->getParameter('clientSecret'),
             'apiUrl' => $this->getApiUrl()
         ]);
         $response = $request->send();
@@ -46,12 +43,8 @@ class Gateway extends AbstractGateway
      */
     public function purchase(array $parameters = array())
     {
-        $accessTokenResponse = $this->getAccessToken();
-        $request = parent::createRequest(PurchaseRequest::class, [
-            'accessToken' => $accessTokenResponse->getAccessToken(),
-            'purchaseData' => $parameters,
-            'apiUrl' => $this->getApiUrl()
-        ]);
+        $this->setAccessToken($this->getAccessToken()->getAccessToken());
+        $request = parent::createRequest(PurchaseRequest::class, $parameters);
         $response = $request->send();
 
         return $response;
@@ -63,11 +56,8 @@ class Gateway extends AbstractGateway
      */
     public function completePurchase(array $parameters = array())
     {
-        $accessTokenResponse = $this->getAccessToken();
-        $request = parent::createRequest(CompletePurchaseRequest::class, array_merge($parameters, [
-            'accessToken' => $accessTokenResponse->getAccessToken(),
-            'apiUrl'      => $this->getApiUrl()
-        ]));
+        $this->setAccessToken($this->getAccessToken()->getAccessToken());
+        $request = self::createRequest(CompletePurchaseRequest::class, $parameters);
         $response = $request->send();
 
         return $response;
@@ -78,10 +68,10 @@ class Gateway extends AbstractGateway
      */
     private function getApiUrl()
     {
-        if ($this->isProductionMode) {
-            return self::URL_PRODUCTION;
-        } else {
+        if ($this->getTestMode()) {
             return self::URL_SANDBOX;
+        } else {
+            return self::URL_PRODUCTION;
         }
     }
 
@@ -91,7 +81,7 @@ class Gateway extends AbstractGateway
             'posId' => '',
             'secondKey' => '',
             'clientSecret' => '',
-            'isProductionMode' => false,
+            'testMode' => true,
         ];
     }
 
@@ -100,7 +90,7 @@ class Gateway extends AbstractGateway
      */
     public function setSecondKey($secondKey)
     {
-        $this->parameters->set('secondKey', $secondKey);
+        $this->setParameter('secondKey', $secondKey);
     }
 
     /**
@@ -108,7 +98,7 @@ class Gateway extends AbstractGateway
      */
     public function setPosId($posId)
     {
-        $this->parameters->set('posId', $posId);
+        $this->setParameter('posId', $posId);
     }
 
     /**
@@ -116,14 +106,23 @@ class Gateway extends AbstractGateway
      */
     public function setClientSecret($clientSecret)
     {
-        $this->parameters->set('clientSecret', $clientSecret);
+        $this->setParameter('clientSecret', $clientSecret);
     }
 
-    /**
-     * @param mixed $isProductionMode
-     */
-    public function setIsProductionMode($isProductionMode)
+    private function setApiUrl($apiUrl)
     {
-        $this->isProductionMode = $isProductionMode;
+        $this->setParameter('apiUrl', $apiUrl);
+    }
+
+    private function setAccessToken($accessToken)
+    {
+        $this->setParameter('accessToken', $accessToken);
+    }
+
+    public function initialize(array $parameters = [])
+    {
+        parent::initialize($parameters);
+        $this->setApiUrl($this->getApiUrl());
+        return $this;
     }
 }

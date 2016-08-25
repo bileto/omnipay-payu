@@ -21,7 +21,7 @@ class GatewayFactory
             'posId' => $posId,
             'secondKey' => $secondKey,
             'clientSecret' => $oAuthClientSecret,
-            'isProductionMode' => !$isSandbox
+            'testMode' => $isSandbox
         ]);
         return $gateway;
     }

@@ -21,30 +21,32 @@ try {
     $description = 'Shopping at myStore.com';
 
     $purchaseRequest = [
-        'customerIp'    => '127.0.0.1',
-        'continueUrl'   => $returnUrl,
-        'merchantPosId' => $posId,
-        'description'   => $description,
-        'currencyCode'  => 'PLN',
-        'totalAmount'   => 15000,
-        'extOrderId'     => $orderNo,
-        'buyer'         => (object)[
-            'email'     => 'jan.machala+payu@bileto.com',
-            'firstName' => 'Peter',
-            'lastName'  => 'Morek',
-            'language'  => 'pl'
-        ],
-        'products'      => [
-            (object)[
-                'name'      => 'Lenovo ThinkPad Edge E540',
-                'unitPrice' => 15000,
-                'quantity'  => 1
-            ]
-        ],
-        'payMethods'    => (object) [
-            'payMethod' => (object) [
-                'type'  => 'PBL', // this is for card-only forms (no bank transfers available)
-                'value' => 'c'
+        'purchaseData' => [
+            'customerIp'    => '127.0.0.1',
+            'continueUrl'   => $returnUrl,
+            'merchantPosId' => $posId,
+            'description'   => $description,
+            'currencyCode'  => 'PLN',
+            'totalAmount'   => 15000,
+            'extOrderId'    => $orderNo,
+            'buyer'         => (object)[
+                'email'     => 'jan.machala+payu@bileto.com',
+                'firstName' => 'Peter',
+                'lastName'  => 'Morek',
+                'language'  => 'pl'
+            ],
+            'products'      => [
+                (object)[
+                    'name'      => 'Lenovo ThinkPad Edge E540',
+                    'unitPrice' => 15000,
+                    'quantity'  => 1
+                ]
+            ],
+            'payMethods'    => (object)[
+                'payMethod' => (object)[
+                    'type'  => 'PBL', // this is for card-only forms (no bank transfers available)
+                    'value' => 'c'
+                ]
             ]
         ]
     ];
