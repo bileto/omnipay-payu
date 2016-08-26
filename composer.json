@@ -19,6 +19,7 @@
             "email": "jan.machala@bileto.com"
         }
     ],
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": { "Omnipay\\PayU\\" : "src/" }
     },
@@ -29,6 +30,7 @@
         "omnipay/tests": "^2.1",
         "symfony/var-dumper": "^2.7",
         "mockery/mockery": "^0.9.5",
-        "vlucas/phpdotenv": "^2.3"
+        "vlucas/phpdotenv": "^2.3",
+        "phpunit/phpunit": "3.7.*"
     }
 }
