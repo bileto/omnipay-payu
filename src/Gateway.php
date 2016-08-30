@@ -7,6 +7,7 @@ use Omnipay\PayU\Messages\AccessTokenRequest;
 use Omnipay\PayU\Messages\AccessTokenResponse;
 use Omnipay\PayU\Messages\CompletePurchaseRequest;
 use Omnipay\PayU\Messages\CompletePurchaseResponse;
+use Omnipay\PayU\Messages\Notification;
 use Omnipay\PayU\Messages\PurchaseRequest;
 use Omnipay\PayU\Messages\PurchaseResponse;
 
@@ -61,6 +62,11 @@ class Gateway extends AbstractGateway
         $response = $request->send();
 
         return $response;
+    }
+
+    public function acceptNotification()
+    {
+        return new Notification($this->httpRequest, $this->httpClient, $this->getParameter('secondKey'));
     }
 
     /**

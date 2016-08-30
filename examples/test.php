@@ -18,12 +18,14 @@ $gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret
 try {
     $orderNo = uniqid();
     $returnUrl = 'http://localhost:8000/gateway-return.php';
+    $notifyUrl = 'http://127.0.0.1/online-payments/uuid/notify';
     $description = 'Shopping at myStore.com';
 
     $purchaseRequest = [
         'purchaseData' => [
             'customerIp'    => '127.0.0.1',
             'continueUrl'   => $returnUrl,
+            'notifyUrl'     => $notifyUrl,
             'merchantPosId' => $posId,
             'description'   => $description,
             'currencyCode'  => 'PLN',
