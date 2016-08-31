@@ -36,7 +36,7 @@ class CompletePurchaseRequest extends AbstractRequest
             'Content-Type'  => 'application/json',
             'Authorization' => $data['accessToken']
         ];
-        $url = $data['apiUrl'] . '/api/v2_1/orders/' . urlencode($this->getTransactionId());
+        $url = $data['apiUrl'] . '/api/v2_1/orders/' . urlencode($this->getTransactionReference());
         $httpRequest = $this->httpClient->get($url, $headers);
         $httpResponse = $httpRequest->send();
 

@@ -11,15 +11,23 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function isSuccessful()
     {
-        return 'SUCCESS' === $this->data['status']['statusCode'] ? true : false;
+        return 'SUCCESS' === $this->data['status']['statusCode'];
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTransactionId()
     {
-        return (string) $this->data['orders'][0]['extOrderId'];
+        if (isset($this->data['orders'][0]['extOrderId'])) {
+            return (string) $this->data['orders'][0]['extOrderId'];
+        }
+        return null;
+    }
+
+    public function isCancelled()
+    {
+        return 'CANCELED' === $this->data['status']['statusCode'];
     }
 
     /**
@@ -51,4 +59,8 @@ class CompletePurchaseResponse extends AbstractResponse
         return $this->data['orders'][0]['status'];
     }
 
+    public function isPending()
+    {
+        return 'PENDING' === $this->data['status']['statusCode'];
+    }
 }

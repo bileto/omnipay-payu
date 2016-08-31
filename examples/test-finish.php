@@ -15,7 +15,7 @@ $oAuthClientSecret = isset($_ENV['OAUTH_CLIENT_SECRET']) ? $_ENV['OAUTH_CLIENT_S
 $gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret, true);
 
 try {
-    $completeRequest = ['transactionId' => 'J9R4JP3F2G160825GUEST000P01'];
+    $completeRequest = ['transactionReference' => 'J9R4JP3F2G160825GUEST000P01'];
     $response = $gateway->completePurchase($completeRequest);
 
     echo "Is Successful: " . $response->isSuccessful() . PHP_EOL;
