@@ -7,6 +7,7 @@ use Omnipay\PayU\Messages\AccessTokenRequest;
 use Omnipay\PayU\Messages\AccessTokenResponse;
 use Omnipay\PayU\Messages\CompletePurchaseRequest;
 use Omnipay\PayU\Messages\CompletePurchaseResponse;
+use Omnipay\PayU\Messages\Notification;
 use Omnipay\PayU\Messages\PurchaseRequest;
 use Omnipay\PayU\Messages\PurchaseResponse;
 
@@ -63,6 +64,11 @@ class Gateway extends AbstractGateway
         return $response;
     }
 
+    public function acceptNotification()
+    {
+        return new Notification($this->httpRequest, $this->httpClient, $this->getParameter('secondKey'));
+    }
+
     /**
      * @return string
      */
@@ -82,6 +88,7 @@ class Gateway extends AbstractGateway
             'secondKey' => '',
             'clientSecret' => '',
             'testMode' => true,
+            'posAuthKey' => null,
         ];
     }
 
@@ -109,6 +116,20 @@ class Gateway extends AbstractGateway
         $this->setParameter('clientSecret', $clientSecret);
     }
 
+    /**
+     * @param string|null $posAuthKey
+     */
+    public function setPosAuthKey($posAuthKey = null) {
+        $this->setParameter('posAuthKey', $posAuthKey);
+    }
+
+    public function initialize(array $parameters = array())
+    {
+        parent::initialize($parameters);
+        $this->setApiUrl($this->getApiUrl());
+        return $this;
+    }
+
     private function setApiUrl($apiUrl)
     {
         $this->setParameter('apiUrl', $apiUrl);
@@ -117,12 +138,5 @@ class Gateway extends AbstractGateway
     private function setAccessToken($accessToken)
     {
         $this->setParameter('accessToken', $accessToken);
-    }
-
-    public function initialize(array $parameters = [])
-    {
-        parent::initialize($parameters);
-        $this->setApiUrl($this->getApiUrl());
-        return $this;
     }
 }

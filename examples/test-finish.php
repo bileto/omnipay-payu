@@ -15,13 +15,14 @@ $oAuthClientSecret = isset($_ENV['OAUTH_CLIENT_SECRET']) ? $_ENV['OAUTH_CLIENT_S
 $gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret, true);
 
 try {
-    $completeRequest = ['transactionId' => 'GD8J8WF8Z2160822GUEST000P01'];
+    $completeRequest = ['transactionReference' => 'J9R4JP3F2G160825GUEST000P01'];
     $response = $gateway->completePurchase($completeRequest);
 
     echo "Is Successful: " . $response->isSuccessful() . PHP_EOL;
     echo "TransactionId: " . $response->getTransactionId() . PHP_EOL;
     echo "State code: " . $response->getCode() . PHP_EOL;
     echo "PaymentId: " , $response->getTransactionReference() . PHP_EOL;
+    echo "Data: " . var_export($response->getData(), true) . PHP_EOL;
 
 } catch (\Exception $e) {
     dump($e->getResponse()->getBody(true));
