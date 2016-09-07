@@ -130,21 +130,22 @@ class Notification implements NotificationInterface
     /**
      * Was the transaction successful?
      *
-     * @return string Transaction status, one of {@see STATUS_COMPLETED}, {@see #STATUS_PENDING},
-     * or {@see #STATUS_FAILED}.
+     * @return string Transaction status, one of {@see STATUS_COMPLETED}, {@see #STATUS_PENDING} or {@see #STATUS_FAILED}.
+     * @throws InvalidRequestException
      */
     public function getTransactionStatus()
     {
         if ($this->getData()) {
             $status = $this->getData()->order->status;
-            if (in_array($status, ['COMPLETED', 'CANCELED'], true)) {
+            if (in_array($status, ['COMPLETED'], true)) {
                 return self::STATUS_COMPLETED;
-            } elseif ($status === 'PENDING') {
+            } elseif (in_array($status, 'PENDING')) {
                 return self::STATUS_PENDING;
+            } elseif (in_array($status, ['CANCELLED', 'REJECTED'])) {
+                return self::STATUS_FAILED;
             }
+            throw new InvalidRequestException('We have received unknown status "' . $status . '"');
         }
-
-        return self::STATUS_FAILED;
     }
 
     /**
