@@ -11,7 +11,7 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function isSuccessful()
     {
-        return 'SUCCESS' === $this->data['status']['statusCode'];
+        return 'COMPLETED' === $this->getCode();
     }
 
     /**
@@ -27,7 +27,7 @@ class CompletePurchaseResponse extends AbstractResponse
 
     public function isCancelled()
     {
-        return 'CANCELED' === $this->data['status']['statusCode'];
+        return in_array($this->getCode(), ['CANCELED', 'REJECTED'], true);
     }
 
     /**
@@ -36,16 +36,9 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function getTransactionReference()
     {
-        if(isset($this->data['properties'])) {
-            $properties = $this->data['properties'];
-            $paymentIdProperty = array_filter($properties, function ($item) {
-                return $item['name'] === 'PAYMENT_ID';
-            });
-            if (isset($paymentIdProperty[0]['value'])) {
-                return (string)$paymentIdProperty[0]['value'];
-            }
-        };
-
+        if (isset($this->data['orders'][0]['orderId'])) {
+            return (string) $this->data['orders'][0]['orderId'];
+        }
         return null;
     }
 
@@ -61,6 +54,24 @@ class CompletePurchaseResponse extends AbstractResponse
 
     public function isPending()
     {
-        return 'PENDING' === $this->data['status']['statusCode'];
+        return in_array($this->getCode(), ['PENDING', 'WAITING_FOR_CONFIRMATION', 'NEW']);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaymentReference()
+    {
+        if(isset($this->data['properties'])) {
+            $properties = $this->data['properties'];
+            $paymentIdProperty = array_filter($properties, function ($item) {
+                return $item['name'] === 'PAYMENT_ID';
+            });
+            if (isset($paymentIdProperty[0]['value'])) {
+                return (string)$paymentIdProperty[0]['value'];
+            }
+        };
+
+        return null;
     }
 }
