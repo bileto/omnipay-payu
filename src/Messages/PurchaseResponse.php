@@ -30,7 +30,6 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
         } else {
             return null;
         }
-
     }
 
     /**
@@ -50,14 +49,6 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     }
 
     /**
-     * @return string
-     */
-    public function getState()
-    {
-        return $this->data['status']['statusCode'];
-    }
-
-    /**
      * PayU orderId
      * @return string
      */
@@ -67,13 +58,14 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     }
 
     /**
-     * PayU orderId
-     * @return string
-     * todo: use getTransactionId
+     * @return string|null
      */
     public function getTransactionReference()
     {
-        return $this->getTransactionId();
+        if (isset($this->data['extOrderId'])) {
+            return (string)$this->data['extOrderId'];
+        }
+        return null;
     }
 
     public function isRedirect()
