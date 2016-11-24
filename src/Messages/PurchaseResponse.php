@@ -49,23 +49,27 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     }
 
     /**
-     * PayU orderId
-     * @return string
-     */
-    public function getTransactionId()
-    {
-        return (string)$this->data['orderId'];
-    }
-
-    /**
      * @return string|null
      */
-    public function getTransactionReference()
+    public function getTransactionId()
     {
         if (isset($this->data['extOrderId'])) {
             return (string)$this->data['extOrderId'];
         }
+        if (isset($this->request->getParameters()['transactionId'])) {
+            return $this->request->getParameters()['transactionId'];
+        }
+
         return null;
+    }
+
+    /**
+     * PayU orderId
+     * @return string
+     */
+    public function getTransactionReference()
+    {
+        return (string)$this->data['orderId'];
     }
 
     public function isRedirect()
