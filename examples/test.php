@@ -18,7 +18,7 @@ $gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret
 try {
     $orderNo = uniqid();
     $returnUrl = 'http://localhost:8000/gateway-return.php';
-    $notifyUrl = 'http://127.0.0.1/online-payments/uuid/notify';
+    $notifyUrl = 'http://127.0.0.1/uuid/notify';
     $description = 'Shopping at myStore.com';
 
     $purchaseRequest = [
@@ -56,8 +56,9 @@ try {
     $response = $gateway->purchase($purchaseRequest);
 
     echo "TransactionId: " . $response->getTransactionId() . PHP_EOL;
-    echo 'Is Successful: ' . (bool) $response->isSuccessful() . PHP_EOL;
-    echo 'Is redirect: ' . (bool) $response->isRedirect() . PHP_EOL;
+    echo "TransactionReference: " . $response->getTransactionReference() . PHP_EOL;
+    echo 'Is Successful: ' . (bool)$response->isSuccessful() . PHP_EOL;
+    echo 'Is redirect: ' . (bool)$response->isRedirect() . PHP_EOL;
 
     // Payment init OK, redirect to the payment gateway
     echo $response->getRedirectUrl() . PHP_EOL;

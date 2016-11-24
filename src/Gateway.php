@@ -30,11 +30,12 @@ class Gateway extends AbstractGateway
     public function getAccessToken()
     {
         $request = parent::createRequest(AccessTokenRequest::class, [
-            'clientId' => $this->getParameter('posId'),
+            'clientId'     => $this->getParameter('posId'),
             'clientSecret' => $this->getParameter('clientSecret'),
-            'apiUrl' => $this->getApiUrl()
+            'apiUrl'       => $this->getApiUrl()
         ]);
         $response = $request->send();
+
         return $response;
     }
 
@@ -42,7 +43,7 @@ class Gateway extends AbstractGateway
      * @param array $parameters
      * @return PurchaseResponse
      */
-    public function purchase(array $parameters = array())
+    public function purchase(array $parameters = [])
     {
         $this->setAccessToken($this->getAccessToken()->getAccessToken());
         $request = parent::createRequest(PurchaseRequest::class, $parameters);
@@ -55,7 +56,7 @@ class Gateway extends AbstractGateway
      * @param array $parameters
      * @return CompletePurchaseResponse
      */
-    public function completePurchase(array $parameters = array())
+    public function completePurchase(array $parameters = [])
     {
         $this->setAccessToken($this->getAccessToken()->getAccessToken());
         $request = self::createRequest(CompletePurchaseRequest::class, $parameters);
@@ -84,11 +85,11 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return [
-            'posId' => '',
-            'secondKey' => '',
+            'posId'        => '',
+            'secondKey'    => '',
             'clientSecret' => '',
-            'testMode' => true,
-            'posAuthKey' => null,
+            'testMode'     => true,
+            'posAuthKey'   => null,
         ];
     }
 
@@ -119,14 +120,16 @@ class Gateway extends AbstractGateway
     /**
      * @param string|null $posAuthKey
      */
-    public function setPosAuthKey($posAuthKey = null) {
+    public function setPosAuthKey($posAuthKey = null)
+    {
         $this->setParameter('posAuthKey', $posAuthKey);
     }
 
-    public function initialize(array $parameters = array())
+    public function initialize(array $parameters = [])
     {
         parent::initialize($parameters);
         $this->setApiUrl($this->getApiUrl());
+
         return $this;
     }
 

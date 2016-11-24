@@ -20,8 +20,9 @@ class CompletePurchaseResponse extends AbstractResponse
     public function getTransactionId()
     {
         if (isset($this->data['orders'][0]['extOrderId'])) {
-            return (string) $this->data['orders'][0]['extOrderId'];
+            return (string)$this->data['orders'][0]['extOrderId'];
         }
+
         return null;
     }
 
@@ -37,8 +38,9 @@ class CompletePurchaseResponse extends AbstractResponse
     public function getTransactionReference()
     {
         if (isset($this->data['orders'][0]['orderId'])) {
-            return (string) $this->data['orders'][0]['orderId'];
+            return (string)$this->data['orders'][0]['orderId'];
         }
+
         return null;
     }
 
@@ -62,7 +64,7 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function getPaymentReference()
     {
-        if(isset($this->data['properties'])) {
+        if (isset($this->data['properties'])) {
             $properties = $this->data['properties'];
             $paymentIdProperty = array_filter($properties, function ($item) {
                 return $item['name'] === 'PAYMENT_ID';

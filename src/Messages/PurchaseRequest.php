@@ -29,6 +29,9 @@ class PurchaseRequest extends AbstractRequest
             'Authorization' => $data['accessToken']
         ];
         $apiUrl = $data['apiUrl'] . '/api/v2_1/orders';
+        if (isset($data['purchaseData']['extOrderId'])) {
+            $this->setTransactionId($data['purchaseData']['extOrderId']);
+        }
         $httpRequest = $this->httpClient->post($apiUrl, $headers, json_encode($data['purchaseData']));
         $httpRequest->configureRedirects(true, 0);
         $httpResponse = $httpRequest->send();
