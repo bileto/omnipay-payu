@@ -53,10 +53,10 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      */
     public function getTransactionId()
     {
-        if (isset($this->data['extOrderId'])) {
-            return (string)$this->data['extOrderId'];
+        if (isset($this->data['extOrderId']) && !empty($this->data['extOrderId'])) {
+            return (string) $this->data['extOrderId'];
         }
-        if (isset($this->request->getParameters()['transactionId'])) {
+        if (isset($this->request->getParameters()['transactionId']) && !empty($this->request->getParameters()['transactionId'])) {
             return $this->request->getParameters()['transactionId'];
         }
 
@@ -69,7 +69,10 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
      */
     public function getTransactionReference()
     {
-        return (string)$this->data['orderId'];
+        if (isset($this->data['orderId']) && !empty($this->data['orderId'])) {
+            return (string) $this->data['orderId'];
+        }
+        return null;
     }
 
     public function isRedirect()

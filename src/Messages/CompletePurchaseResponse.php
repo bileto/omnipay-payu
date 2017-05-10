@@ -19,8 +19,8 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function getTransactionId()
     {
-        if (isset($this->data['orders'][0]['extOrderId'])) {
-            return (string)$this->data['orders'][0]['extOrderId'];
+        if (isset($this->data['orders'][0]['extOrderId']) && !empty($this->data['orders'][0]['extOrderId'])) {
+            return (string) $this->data['orders'][0]['extOrderId'];
         }
 
         return null;
@@ -37,8 +37,8 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function getTransactionReference()
     {
-        if (isset($this->data['orders'][0]['orderId'])) {
-            return (string)$this->data['orders'][0]['orderId'];
+        if (isset($this->data['orders'][0]['orderId']) && !empty($this->data['orders'][0]['orderId'])) {
+            return (string) $this->data['orders'][0]['orderId'];
         }
 
         return null;
