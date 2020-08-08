@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Omnipay\PayU\Messages;
-
 
 use Guzzle\Http\Client;
 use Guzzle\Http\ClientInterface;
@@ -77,6 +75,7 @@ class Notification implements NotificationInterface
      * Gateway Reference
      *
      * @return string A reference provided by the gateway to represent this transaction
+     * @throws InvalidRequestException
      */
     public function getTransactionReference()
     {
@@ -139,12 +138,14 @@ class Notification implements NotificationInterface
             $status = $this->getData()->order->status;
             if (in_array($status, ['COMPLETED'], true)) {
                 return self::STATUS_COMPLETED;
-            } elseif (in_array($status, 'PENDING')) {
+            } elseif (in_array($status, ['PENDING'])) {
                 return self::STATUS_PENDING;
             } elseif (in_array($status, ['CANCELLED', 'REJECTED'])) {
                 return self::STATUS_FAILED;
             }
             throw new InvalidRequestException('We have received unknown status "' . $status . '"');
+        } else {
+            throw new InvalidRequestException("PayU data is missing");
         }
     }
 
@@ -152,9 +153,11 @@ class Notification implements NotificationInterface
      * Response Message
      *
      * @return string A response message from the payment gateway
+     * @throws InvalidRequestException
      */
     public function getMessage()
     {
         return $this->getData();
     }
+
 }
