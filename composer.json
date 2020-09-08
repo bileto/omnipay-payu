@@ -32,6 +32,7 @@
         "symfony/var-dumper": "^2.7",
         "mockery/mockery": "^0.9.5",
         "vlucas/phpdotenv": "^2.3",
-        "phpunit/phpunit": "3.7.*"
+        "phpunit/phpunit": "3.7.*",
+        "phpstan/phpstan": "^0.12.42"
     }
 }

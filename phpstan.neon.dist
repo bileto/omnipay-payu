@@ -1,0 +1,7 @@
+parameters:
+    level: 6
+    excludes_analyse:
+        - %currentWorkingDirectory%/vendor/
+    paths:
+        - .
+    checkMissingIterableValueType: false
