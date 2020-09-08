@@ -24,7 +24,6 @@ try {
     echo "PaymentId: " , $response->getTransactionReference() . PHP_EOL;
     echo "Data: " . var_export($response->getData(), true) . PHP_EOL;
 
-} catch (\Exception $e) {
-    dump($e->getResponse()->getBody(true));
+} catch (Exception $e) {
     dump((string)$e);
 }

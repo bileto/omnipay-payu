@@ -3,7 +3,6 @@
 require '../vendor/autoload.php';
 
 use Omnipay\PayU\GatewayFactory;
-use Omnipay\PayU\Messages\Notification;
 use Symfony\Component\HttpFoundation\Request;
 
 $dotenv = new Dotenv\Dotenv(__DIR__ . '/..');
@@ -36,7 +35,6 @@ try {
     echo "Status: " . $response->getTransactionStatus() . PHP_EOL;
     echo "Data: " . var_export($response->getData(), true) . PHP_EOL;
 
-} catch (\Exception $e) {
-//    dump($e->getResponse()->getBody(true));
+} catch (Exception $e) {
     dump((string)$e);
 }

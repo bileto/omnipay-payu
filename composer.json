@@ -15,6 +15,14 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Josef Petrák",
+            "email": "josef.petrak@bileto.com"
+        },
+        {
+            "name": "Jiří Trávníček",
+            "email": "jiri.travnicek@bileto.com"
+        },
+        {
             "name": "Jan Machala",
             "email": "jan.machala@bileto.com"
         }
@@ -24,6 +32,7 @@
         "psr-4": { "Omnipay\\PayU\\" : "src/" }
     },
     "require": {
+        "ext-json": "*",
         "omnipay/common": "^2.5",
         "openpayu/openpayu_php_sdk": "^2.2"
     },
