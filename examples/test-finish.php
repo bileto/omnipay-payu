@@ -17,7 +17,7 @@ $posAuthKey = isset($_ENV['POS_AUTH_KEY']) ? $_ENV['POS_AUTH_KEY'] : '300746';
 $gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret, true, $posAuthKey);
 
 try {
-    $completeRequest = ['transactionReference' => 'THTJ529R6W210622GUEST000P01'];
+    $completeRequest = ['transactionReference' => 'J9R4JP3F2G160825GUEST000P01'];
     /** @var CompletePurchaseResponse $response */
     $response = $gateway->completePurchase($completeRequest);
 
