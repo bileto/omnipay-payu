@@ -77,6 +77,6 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
 
     public function isRedirect(): bool
     {
-        return is_string($this->data->redirectUr);
+        return is_string($this->data->redirectUri);
     }
 }
