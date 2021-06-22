@@ -2,18 +2,19 @@
 
 require '../vendor/autoload.php';
 
-use Guzzle\Http\Exception\ClientErrorResponseException;
 use Omnipay\PayU\GatewayFactory;
+use Omnipay\PayU\Messages\PurchaseResponse;
 
-$dotenv = new Dotenv\Dotenv(__DIR__ . '/..');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 // default is official sandbox
-$posId = isset($_ENV['POS_ID']) ? $_ENV['POS_ID'] : '300046';
-$secondKey = isset($_ENV['SECOND_KEY']) ? $_ENV['SECOND_KEY'] : '0c017495773278c50c7b35434017b2ca';
-$oAuthClientSecret = isset($_ENV['OAUTH_CLIENT_SECRET']) ? $_ENV['OAUTH_CLIENT_SECRET'] : 'c8d4b7ac61758704f38ed5564d8c0ae0';
+$posId = isset($_ENV['POS_ID']) ? $_ENV['POS_ID'] : '300746';
+$secondKey = isset($_ENV['SECOND_KEY']) ? $_ENV['SECOND_KEY'] : 'b6ca15b0d1020e8094d9b5f8d163db54';
+$oAuthClientSecret = isset($_ENV['OAUTH_CLIENT_SECRET']) ? $_ENV['OAUTH_CLIENT_SECRET'] : '2ee86a66e5d97e3fadc400c9f19b065d';
+$posAuthKey = isset($_ENV['POS_AUTH_KEY']) ? $_ENV['POS_AUTH_KEY'] : '300746';
 
-$gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret, true);
+$gateway = GatewayFactory::createInstance($posId, $secondKey, $oAuthClientSecret, true, $posAuthKey);
 
 try {
     $orderNo = uniqid();
@@ -53,6 +54,7 @@ try {
         ]
     ];
 
+    /** @var PurchaseResponse $response */
     $response = $gateway->purchase($purchaseRequest);
 
     echo "TransactionId: " . $response->getTransactionId() . PHP_EOL;
@@ -62,7 +64,8 @@ try {
 
     // Payment init OK, redirect to the payment gateway
     echo $response->getRedirectUrl() . PHP_EOL;
-} catch (ClientErrorResponseException $e) {
+} catch (OpenPayU_Exception $e) {
+    dump($e->getMessage());
+} catch (Exception $e) {
     dump((string)$e);
-    dump($e->getResponse()->getBody(true));
 }

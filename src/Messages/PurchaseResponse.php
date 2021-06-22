@@ -10,9 +10,9 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     /**
      * @return boolean
      */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
-        if ('SUCCESS' !== $this->data['status']['statusCode']) {
+        if ('SUCCESS' !== $this->data->status->statusCode) {
             return false;
         }
         $redirectUrl = $this->getRedirectUrl();
@@ -23,19 +23,19 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     /**
      * Gets the redirect target url.
      */
-    public function getRedirectUrl()
+    public function getRedirectUrl(): ?string
     {
-        if (isset($this->data['redirectUri']) && is_string($this->data['redirectUri'])) {
-            return $this->data['redirectUri'];
-        } else {
-            return null;
+        if (isset($this->data->redirectUri) && is_string($this->data->redirectUri)) {
+            return $this->data->redirectUri;
         }
+
+        return null;
     }
 
     /**
      * Get the required redirect method (either GET or POST).
      */
-    public function getRedirectMethod()
+    public function getRedirectMethod(): string
     {
         return 'GET';
     }
@@ -43,7 +43,7 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     /**
      * Gets the redirect form data array, if the redirect method is POST.
      */
-    public function getRedirectData()
+    public function getRedirectData(): ?array
     {
         return null;
     }
@@ -51,10 +51,10 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
     /**
      * @return string|null
      */
-    public function getTransactionId()
+    public function getTransactionId(): ?string
     {
-        if (isset($this->data['extOrderId']) && !empty($this->data['extOrderId'])) {
-            return (string) $this->data['extOrderId'];
+        if (isset($this->data->extOrderId) && !empty($this->data->extOrderId)) {
+            return (string) $this->data->extOrderId;
         }
         if (isset($this->request->getParameters()['transactionId']) && !empty($this->request->getParameters()['transactionId'])) {
             return $this->request->getParameters()['transactionId'];
@@ -65,18 +65,18 @@ class PurchaseResponse extends AbstractResponse implements RedirectResponseInter
 
     /**
      * PayU orderId
-     * @return string
+     * @return null|string
      */
-    public function getTransactionReference()
+    public function getTransactionReference(): ?string
     {
-        if (isset($this->data['orderId']) && !empty($this->data['orderId'])) {
-            return (string) $this->data['orderId'];
+        if (isset($this->data->orderId) && !empty($this->data->orderId)) {
+            return (string) $this->data->orderId;
         }
         return null;
     }
 
-    public function isRedirect()
+    public function isRedirect(): bool
     {
-        return is_string($this->data['redirectUri']);
+        return is_string($this->data->redirectUr);
     }
 }

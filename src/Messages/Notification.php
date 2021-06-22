@@ -2,9 +2,8 @@
 
 namespace Omnipay\PayU\Messages;
 
-use Guzzle\Http\Client;
-use Guzzle\Http\ClientInterface;
 use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\Common\Http\Client;
 use Omnipay\Common\Message\NotificationInterface;
 use OpenPayU_Util;
 use stdClass;
@@ -21,7 +20,7 @@ class Notification implements NotificationInterface
     /** @var Request */
     private $httpRequest;
 
-    /** @var Client|ClientInterface */
+    /** @var Client */
     private $httpClient;
 
     /** @var string */
@@ -74,10 +73,10 @@ class Notification implements NotificationInterface
     /**
      * Gateway Reference
      *
-     * @return string A reference provided by the gateway to represent this transaction
+     * @return null|string A reference provided by the gateway to represent this transaction
      * @throws InvalidRequestException
      */
-    public function getTransactionReference()
+    public function getTransactionReference(): ?string
     {
         if (isset($this->getData()->order->extOrderId) && !empty($this->getData()->order->extOrderId)) {
             return (string) $this->getData()->order->extOrderId;
@@ -132,7 +131,7 @@ class Notification implements NotificationInterface
      * @return string Transaction status, one of {@see STATUS_COMPLETED}, {@see #STATUS_PENDING} or {@see #STATUS_FAILED}.
      * @throws InvalidRequestException
      */
-    public function getTransactionStatus()
+    public function getTransactionStatus(): string
     {
         if ($this->getData()) {
             $status = $this->getData()->order->status;
