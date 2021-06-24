@@ -3,86 +3,79 @@
 namespace Omnipay\PayU;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\PayU\Messages\AccessTokenRequest;
-use Omnipay\PayU\Messages\AccessTokenResponse;
+use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\PayU\Messages\CompletePurchaseRequest;
 use Omnipay\PayU\Messages\CompletePurchaseResponse;
 use Omnipay\PayU\Messages\Notification;
 use Omnipay\PayU\Messages\PurchaseRequest;
 use Omnipay\PayU\Messages\PurchaseResponse;
+use OpenPayU_Configuration;
+use OpenPayU_Exception;
+use OpenPayU_Exception_Configuration;
 
 class Gateway extends AbstractGateway
 {
-    const URL_SANDBOX = 'https://secure.snd.payu.com';
-    const URL_PRODUCTION = 'https://secure.payu.com';
+    const ENV_TEST = 'sandbox';
+    const ENV_PRODUCTION = 'secure';
 
     /**
      * Get gateway display name
      */
-    public function getName()
+    public function getName(): string
     {
         return 'PayU';
     }
 
     /**
-     * @return AccessTokenResponse
+     * @param array $parameters
+     * @return $this|Gateway
+     * @throws OpenPayU_Exception_Configuration
      */
-    public function getAccessToken()
+    public function initialize(array $parameters = []): self
     {
-        $request = parent::createRequest(AccessTokenRequest::class, [
-            'clientId'     => $this->getParameter('posId'),
-            'clientSecret' => $this->getParameter('clientSecret'),
-            'apiUrl'       => $this->getApiUrl()
-        ]);
-        $response = $request->send();
+        parent::initialize($parameters);
 
-        return $response;
+        OpenPayU_Configuration::setEnvironment($this->getEnvironment());
+        OpenPayU_Configuration::setOauthGrantType('client_credentials');
+        OpenPayU_Configuration::setMerchantPosId($this->getParameter('posId'));
+        OpenPayU_Configuration::setSignatureKey($this->getParameter('secondKey'));
+        OpenPayU_Configuration::setOauthClientId($this->getParameter('posAuthKey'));
+        OpenPayU_Configuration::setOauthClientSecret($this->getParameter('clientSecret'));
+
+        return $this;
     }
 
     /**
-     * @param array $parameters
-     * @return PurchaseResponse
+     * @param array $options
+     * @throws OpenPayU_Exception
+     * @return PurchaseResponse|ResponseInterface
      */
-    public function purchase(array $parameters = [])
+    public function purchase(array $options = []): ResponseInterface
     {
-        $this->setAccessToken($this->getAccessToken()->getAccessToken());
-        $request = parent::createRequest(PurchaseRequest::class, $parameters);
-        $response = $request->send();
+        $request = $this->createRequest(PurchaseRequest::class, $options);
 
-        return $response;
+        return $request->send();
     }
 
     /**
-     * @param array $parameters
-     * @return CompletePurchaseResponse
+     * @param array $options
+     * @throws OpenPayU_Exception
+     * @return CompletePurchaseResponse|ResponseInterface
      */
-    public function completePurchase(array $parameters = [])
+    public function completePurchase(array $options = []): ResponseInterface
     {
-        $this->setAccessToken($this->getAccessToken()->getAccessToken());
-        $request = self::createRequest(CompletePurchaseRequest::class, $parameters);
-        $response = $request->send();
+        $request = $this->createRequest(CompletePurchaseRequest::class, $options);
 
-        return $response;
+        return $request->send();
     }
 
-    public function acceptNotification()
+    public function acceptNotification(): Notification
     {
         return new Notification($this->httpRequest, $this->httpClient, $this->getParameter('secondKey'));
     }
 
-    /**
-     * @return string
-     */
-    private function getApiUrl()
-    {
-        if ($this->getTestMode()) {
-            return self::URL_SANDBOX;
-        } else {
-            return self::URL_PRODUCTION;
-        }
-    }
-
-    public function getDefaultParameters()
+    /** @return array<string, mixed> */
+    public function getDefaultParameters(): array
     {
         return [
             'posId'        => '',
@@ -96,7 +89,7 @@ class Gateway extends AbstractGateway
     /**
      * @param string $secondKey
      */
-    public function setSecondKey($secondKey)
+    public function setSecondKey(string $secondKey): void
     {
         $this->setParameter('secondKey', $secondKey);
     }
@@ -104,7 +97,7 @@ class Gateway extends AbstractGateway
     /**
      * @param string $posId
      */
-    public function setPosId($posId)
+    public function setPosId(string $posId): void
     {
         $this->setParameter('posId', $posId);
     }
@@ -112,7 +105,7 @@ class Gateway extends AbstractGateway
     /**
      * @param string $clientSecret
      */
-    public function setClientSecret($clientSecret)
+    public function setClientSecret(string $clientSecret): void
     {
         $this->setParameter('clientSecret', $clientSecret);
     }
@@ -120,26 +113,17 @@ class Gateway extends AbstractGateway
     /**
      * @param string|null $posAuthKey
      */
-    public function setPosAuthKey($posAuthKey = null)
+    public function setPosAuthKey(string $posAuthKey = null): void
     {
         $this->setParameter('posAuthKey', $posAuthKey);
     }
 
-    public function initialize(array $parameters = [])
+    private function getEnvironment(): string
     {
-        parent::initialize($parameters);
-        $this->setApiUrl($this->getApiUrl());
+        if ($this->getTestMode()) {
+            return self::ENV_TEST;
+        }
 
-        return $this;
-    }
-
-    private function setApiUrl($apiUrl)
-    {
-        $this->setParameter('apiUrl', $apiUrl);
-    }
-
-    private function setAccessToken($accessToken)
-    {
-        $this->setParameter('accessToken', $accessToken);
+        return self::ENV_PRODUCTION;
     }
 }

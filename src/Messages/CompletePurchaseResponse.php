@@ -9,7 +9,7 @@ class CompletePurchaseResponse extends AbstractResponse
     /**
      * @return boolean
      */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
         return 'COMPLETED' === $this->getCode();
     }
@@ -17,16 +17,16 @@ class CompletePurchaseResponse extends AbstractResponse
     /**
      * @return string|null
      */
-    public function getTransactionId()
+    public function getTransactionId(): ?string
     {
-        if (isset($this->data['orders'][0]['extOrderId']) && !empty($this->data['orders'][0]['extOrderId'])) {
-            return (string) $this->data['orders'][0]['extOrderId'];
+        if (isset($this->data->orders[0]->extOrderId) && !empty($this->data->orders[0]->extOrderId)) {
+            return (string) $this->data->orders[0]->extOrderId;
         }
 
         return null;
     }
 
-    public function isCancelled()
+    public function isCancelled(): bool
     {
         return in_array($this->getCode(), ['CANCELED', 'REJECTED'], true);
     }
@@ -35,10 +35,10 @@ class CompletePurchaseResponse extends AbstractResponse
      * PAYMENT_ID is not present for transaction in state PENDING
      * @return null|string
      */
-    public function getTransactionReference()
+    public function getTransactionReference(): ?string
     {
-        if (isset($this->data['orders'][0]['orderId']) && !empty($this->data['orders'][0]['orderId'])) {
-            return (string) $this->data['orders'][0]['orderId'];
+        if (isset($this->data->orders[0]->orderId) && !empty($this->data->orders[0]->orderId)) {
+            return (string) $this->data->orders[0]->orderId;
         }
 
         return null;
@@ -49,12 +49,12 @@ class CompletePurchaseResponse extends AbstractResponse
      *
      * @return string
      */
-    public function getCode()
+    public function getCode(): string
     {
-        return $this->data['orders'][0]['status'];
+        return $this->data->orders[0]->status;
     }
 
-    public function isPending()
+    public function isPending(): bool
     {
         return in_array($this->getCode(), ['PENDING', 'WAITING_FOR_CONFIRMATION', 'NEW']);
     }
@@ -62,18 +62,8 @@ class CompletePurchaseResponse extends AbstractResponse
     /**
      * @return string|null
      */
-    public function getPaymentReference()
+    public function getPaymentReference(): ?string
     {
-        if (isset($this->data['properties'])) {
-            $properties = $this->data['properties'];
-            $paymentIdProperty = array_filter($properties, function ($item) {
-                return $item['name'] === 'PAYMENT_ID';
-            });
-            if (isset($paymentIdProperty[0]['value'])) {
-                return (string)$paymentIdProperty[0]['value'];
-            }
-        };
-
-        return null;
+        return $this->getTransactionReference();
     }
 }

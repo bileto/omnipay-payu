@@ -32,16 +32,19 @@
         "psr-4": { "Omnipay\\PayU\\" : "src/" }
     },
     "require": {
+        "php": "^7.2|^8",
+        "ext-curl": "*",
         "ext-json": "*",
-        "omnipay/common": "^2.5",
+        "omnipay/common": "^3",
         "openpayu/openpayu_php_sdk": "^2.2"
     },
     "require-dev": {
-        "omnipay/tests": "^2.1",
-        "symfony/var-dumper": "^2.7",
-        "mockery/mockery": "^0.9.5",
-        "vlucas/phpdotenv": "^2.3",
-        "phpunit/phpunit": "3.7.*",
-        "phpstan/phpstan": "^0.12.42"
+        "omnipay/tests": "^4.1",
+        "symfony/var-dumper": "^5.3",
+        "mockery/mockery": "^1.4",
+        "vlucas/phpdotenv": "^5.3",
+        "phpunit/phpunit": "^9",
+        "phpstan/phpstan": "^0.12.9",
+        "php-http/guzzle7-adapter": "^1.0"
     }
 }
