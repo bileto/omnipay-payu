@@ -137,7 +137,7 @@ class Notification implements NotificationInterface
             $status = $this->getData()->order->status;
             if (in_array($status, ['COMPLETED'], true)) {
                 return self::STATUS_COMPLETED;
-            } elseif (in_array($status, ['PENDING'])) {
+            } elseif (in_array($status, ['PENDING', 'WAITING_FOR_CONFIRMATION'])) {
                 return self::STATUS_PENDING;
             } elseif (in_array($status, ['CANCELED','CANCELLED', 'REJECTED'])) {
                 return self::STATUS_FAILED;
